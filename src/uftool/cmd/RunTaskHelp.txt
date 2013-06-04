@@ -1,0 +1,22 @@
+usage: runtask <taskset> <taskname>
+
+    Runs one of your admin tasks from the command line.
+
+Optional flags can be used to define any variables needed for the task. Taskset reflects the class
+name of your AdminTaskSet and taskname reflects the method name of the given task, and both can be 
+given lowercase.  You don't need to include the package in "taskset" either.
+
+If your classes have case sensitive naming, or you have different sets with the same name but in 
+different packages, you can be more explicit and give the fully qualified, case-included name.
+
+Examples
+    
+    # Same as calling AnimalTasks.patKitty();
+    uftool runtask animaltasks patkitty
+
+    # Same as calling AuthTasks.createUser('jason', 'mylittlepony');
+    uftool runtask authtasks createuser -username=jason -password=mylittlepony
+
+    # If you want to run a different AuthTasks, you can use the fully qualified, case
+    # sensitive naming, same as calling otherpackage.AuthTasks.createUser('obama', 'imtheboss'):
+    uftool runtask otherpackage.AuthTasks createUser -username=jason -password=mylittlepony
