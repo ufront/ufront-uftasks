@@ -1,4 +1,4 @@
-ufront-uftool
-=============
+ufront-uftasks
+==============
 
-A command line tool that lets you administer parts of your website (Run tasks, migrations, and an interactive shell)
+Tasks you write for your ufront app that can be run from the ufadmin panel or from the command line.  Useful for tasks like data-migration, backups, integrity-checks, downloads and syncing etc, creating new users etc.

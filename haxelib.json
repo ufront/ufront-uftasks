@@ -1,0 +1,15 @@
+{
+  "name": "ufront-uftasks",
+  "license": "MIT",
+  "classPath": "src",
+  "tags": ["ufront","web","cli","neko","php","tasks","cron"],
+  "description": "Tasks you write for your ufront app that can be run from the ufadmin panel or from the command line.  ",
+  "contributors": ["jason"],
+  "releasenote": "Initial Release",
+  "version": "1.0.0-beta.1",
+  "url": "https://github.com/ufront/ufront-uftasks",
+  "dependencies": {
+    "mcli": "",
+    "compiletime": ""
+  }
+}
