@@ -10,6 +10,10 @@
   "url": "https://github.com/ufront/ufront-uftasks",
   "dependencies": {
     "mcli": "",
-    "compiletime": ""
+    "compiletime": "",
+    "ufront-orm": "",
+    "ufront-easyauth": "",
+    "ufront-remoting": "",
+    "ufront-mvc": ""
   }
 }
