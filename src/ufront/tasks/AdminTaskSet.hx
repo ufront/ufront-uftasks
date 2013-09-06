@@ -28,7 +28,7 @@ class AdminTaskSet
 
 		// Get all tasks, most recent first, and turn into an array (because order is important to us 
 		// and we will iterate over this more than once...)
-		var allTasksRun = AdminTaskLog.manager.search(true, { orderBy : -modified }).array();
+		// var allTasksRun = AdminTaskLog.manager.search(true, { orderBy : -modified }).array();
 
 		var classMeta = haxe.rtti.Meta.getType(currentClass);
 		taskSetTitle = Reflect.hasField(classMeta, 'name') ? classMeta.name[0] : taskSetName;
@@ -47,8 +47,8 @@ class AdminTaskSet
 				var taskInputs = getTaskInputs(fieldName);
 
 				// Look for any previous runs, and try to get the last date the task was run
-				var previousRuns = allTasksRun.filter(function (taskLog) { return taskLog.task == fieldName && taskLog.ts == taskSetName; });
-				var taskLastRun = (previousRuns.length > 0) ? previousRuns[0].modified : null;
+				// var previousRuns = allTasksRun.filter(function (taskLog) { return taskLog.task == fieldName && taskLog.ts == taskSetName; });
+				// var taskLastRun = (previousRuns.length > 0) ? previousRuns[0].modified : null;
 				
 				// Create the task for this field, add it to the list
 				var task = {
@@ -58,7 +58,7 @@ class AdminTaskSet
 					title: taskTitle,
 					description: taskDescription,
 					inputs: taskInputs,
-					lastRun: taskLastRun
+					lastRun: null
 				};
 				tasks.push(task);
 			}
@@ -73,7 +73,9 @@ class AdminTaskSet
 
 		var print = function (string) {
 			output.add(string + "\n");
-			if (liveOutput)	Sys.println(string);
+			#if sys
+				if (liveOutput)	Sys.println(string);
+			#end
 		}
 		
 		haxe.Log.trace = function (t:Dynamic, ?p:haxe.PosInfos) { 
