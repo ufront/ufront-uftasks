@@ -9,6 +9,7 @@ using StringTools;
 using Reflect;
 
 @:rtti
+@:deprecated
 class TaskSet {
 
 	public function new() {}
