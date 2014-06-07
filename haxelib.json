@@ -11,8 +11,6 @@
   "dependencies": {
     "mcli": "",
     "compiletime": "",
-    "ufront-orm": "",
-    "ufront-easyauth": "",
     "ufront-mvc": ""
   }
 }
