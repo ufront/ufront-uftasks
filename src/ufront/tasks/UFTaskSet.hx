@@ -3,34 +3,77 @@ package ufront.tasks;
 import mcli.CommandLine;
 import minject.Injector;
 import sys.io.*;
-import ufront.auth.YesBossAuthHandler;
 import ufront.log.FileLogger;
 import ufront.log.Message;
 import ufront.api.UFApi;
-import ufront.auth.UFAuthHandler;
-import ufront.auth.UFAuthUser;
 import haxe.PosInfos;
 using haxe.io.Path;
 
 class UFTaskSet extends CommandLine {
 
 	/**
-		Create an injector suitable for running UFTaskSet tasks from the Command Line Interface (CLI).
+		The injector for this task set.
 
-		@param contentDir The path, relative to the script directory, where the "contentDirectory" is located.  `uf-content` by default.
-		@param logFile The path, relative to `contentDir`, of a file to write logs to.  Null by default.  If null, logs will not be written to files.
-		@param apis A set of UFApi classes to be added to the injector.  If null, no classes will be added.
-		@param auth An auth-handler to use in the APIs.  If null, a `YesBossAuthHandler` will be used, meaning all permissions are granted.
-		@return An `minject.Injector` ready to use in your UFTaskSet.
+		Set during the constructor, and injection into this object is performed immediately.
 	**/
-	public static function buildCLIInjector( ?contentDir="uf-content", ?logFile:String, ?apis:Iterable<Class<UFApi>>, ?auth:UFAuthHandler<UFAuthUser> ) {
+	@:skip public var injector(default,null):Injector;
+	
+	/**
+		The messages list.  This must be injected for `ufTrace`, `ufLog`, `ufWarn` and `ufError` to function correctly.
 		
-		var injector = new Injector();
-		if ( auth==null ) auth = new YesBossAuthHandler();
+		You can call `useCLILogging()` to set up a message list appropriate for CLI usage.
+	**/
+	@:skip @inject public var messages:MessageList;
 
-		// Set up the tracing / file logging
+	/**
+		Set up the TaskSet.
+
+		This will perform dependency injection
+	**/
+	public function new( ?injector:Injector ) {
+		super();
+		this.injector = (injector!=null) ? injector : new Injector();
+	}
+
+	/**
+		Shortcut to map a class into `injector`.  
+
+		- If `val` is supplied, `injector.mapValue( cl, val, ?named )` will be used
+		- Otherwise, if `singleton` is true, `injector.mapSingleton( cl, ?named )`
+		- Otherwise, `injector.mapClass( cl, cl2, ?named )`
+
+		Singleton is false by default.
+
+		If `cl2` is not supplied, but `mapSingleton` or `mapClass` is used, `cl` will be used in it's place.
+
+		If a name is supplied, the mapping will be for that specific name.
+
+		This method is chainable.
+	**/
+	@:skip
+	public function inject<T>( cl:Class<T>, ?val:T, ?cl2:Class<T>, ?singleton:Bool=false, ?named:String ):UFTaskSet {
+		if ( val!=null ) {
+			injector.mapValue( cl, val, named );
+		}
+		else {
+			if (cl2==null) cl2 = cl;
+
+			if ( singleton ) injector.mapSingleton( cl, named );
+			else injector.mapClass( cl, cl2, named );
+		}
+		return this;
+	}
+
+	/**
+		Set up the logging to direct all traces, logs, warnings and error messages to the command line.
+
+		Optionally you can also write to a logFile (the path should be specified relative to the content directory).
+	**/
+	@:skip
+	public function useCLILogging( ?logFile:String ):UFTaskSet {
 		var file:FileOutput = null;
-		if ( contentDir!=null && logFile!=null ) {
+		if ( logFile!=null ) {
+			var contentDir:String = injector.getInstance( String, "contentDirectory" );
 			var logFilePath = contentDir.addTrailingSlash()+logFile;
 			file = File.append( logFilePath );
 			var line = '${Date.now()} [UFTask Runner] ${Sys.args()}';
@@ -45,47 +88,23 @@ class UFTaskSet extends CommandLine {
 		}
 		haxe.Log.trace = function(msg:Dynamic,?pos:PosInfos) onMessage({ msg: msg, pos: pos, type:Trace });
 		var messageList = new MessageList(onMessage);
-
-		// Map the default values
-		injector.mapValue( String, contentDir, "contentDirectory" );
 		injector.mapValue( MessageList, messageList );
-		injector.mapValue( UFAuthHandler, auth );
-
-		if ( apis!=null ) for ( api in apis ) {
-			injector.mapClass( api, api );
-		}
-
-		return injector;
+		return this;
 	}
 
 	/**
-		The injector for this task set.
+		Execute the current task set, given a set of parameters passed in from the command line.
+		
+		Example usage:
 
-		Set during the constructor, and injection into this object is performed immediately.
+		```haxe
+		new Tasks().execute( Sys.args() );
+		```
 	**/
-	var injector(default,null):Injector;
-	
-	/**
-		The messages list.  This must be injected for `ufTrace`, `ufLog`, `ufWarn` and `ufError` to function correctly.
-
-		When called from a web context, this will usually result in the HttpContext's `messages` array being pushed to.
-	**/
-	@inject var messages:MessageList;
-
-	/**
-		Set up the TaskSet.
-
-		This will perform dependency injection
-	**/
-	public function new( injector:Injector ) {
-		super();
-
-		// Possible issues: MCLI requires public member variables to be dispatchers, but what if we want to inject, they need to be public too?
-		// Workaround for now...
-		this.injector = injector;
-		this.messages = injector.getInstance( MessageList );
-
+	@:skip
+	public function execute( args:Array<String> ) {
 		injector.injectInto( this );
+		new mcli.Dispatch( args ).dispatch( this );
 	}
 
 	/**
