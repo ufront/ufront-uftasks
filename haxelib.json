@@ -3,14 +3,14 @@
   "license": "MIT",
   "classPath": "src",
   "tags": ["ufront","web","cli","neko","php","tasks","cron"],
-  "description": "Tasks you write for your ufront app that can be run from the ufadmin panel or from the command line.  ",
+  "description": "Tasks you write for your ufront app that can be run from the ufadmin panel or from the command line.",
   "contributors": ["jason"],
-  "releasenote": "Switch to MCLI after all, much nicer for writing CLI interfaces.  Also better dependency injection support",
-  "version": "1.0.0-beta.4",
+  "releasenote": "Changes to reduce the amount of boiler plate required. Easier dependency injection.",
+  "version": "1.0.0-beta.5",
   "url": "https://github.com/ufront/ufront-uftasks",
   "dependencies": {
-    "mcli": "",
-    "compiletime": "",
-    "ufront-mvc": ""
+    "mcli": "0.1.2-beta",
+    "compiletime": "2.5.0",
+    "ufront-mvc": "1.0.0-rc.1"
   }
 }
