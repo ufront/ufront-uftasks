@@ -5,6 +5,7 @@ import minject.Injector;
 import sys.io.*;
 import ufront.log.FileLogger;
 import ufront.log.Message;
+import ufront.log.MessageList;
 import ufront.api.UFApi;
 import haxe.PosInfos;
 using haxe.io.Path;
