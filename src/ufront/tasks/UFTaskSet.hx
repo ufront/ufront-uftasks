@@ -8,6 +8,7 @@ import ufront.log.Message;
 import ufront.log.MessageList;
 import ufront.api.UFApi;
 import haxe.PosInfos;
+using ufront.core.InjectionTools;
 using haxe.io.Path;
 
 class UFTaskSet extends CommandLine {
@@ -34,34 +35,19 @@ class UFTaskSet extends CommandLine {
 	public function new( ?injector:Injector ) {
 		super();
 		this.injector = (injector!=null) ? injector : new Injector();
+		inject( Injector, injector );
 	}
 
 	/**
-		Shortcut to map a class into `injector`.  
+		Shortcut to map a class into `injector`.
 
-		- If `val` is supplied, `injector.mapValue( cl, val, ?named )` will be used
-		- Otherwise, if `singleton` is true, `injector.mapSingleton( cl, ?named )`
-		- Otherwise, `injector.mapClass( cl, cl2, ?named )`
-
-		Singleton is false by default.
-
-		If `cl2` is not supplied, but `mapSingleton` or `mapClass` is used, `cl` will be used in it's place.
-
-		If a name is supplied, the mapping will be for that specific name.
+		See `ufront.core.InjectionTools.inject()` for details on how injection is performed.
 
 		This method is chainable.
 	**/
 	@:skip
 	public function inject<T>( cl:Class<T>, ?val:T, ?cl2:Class<T>, ?singleton:Bool=false, ?named:String ):UFTaskSet {
-		if ( val!=null ) {
-			injector.mapValue( cl, val, named );
-		}
-		else {
-			if (cl2==null) cl2 = cl;
-
-			if ( singleton ) injector.mapSingleton( cl, named );
-			else injector.mapClass( cl, cl2, named );
-		}
+		injector.inject( cl, val, cl2, singleton, named );
 		return this;
 	}
 
