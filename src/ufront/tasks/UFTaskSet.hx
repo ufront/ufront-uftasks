@@ -35,7 +35,7 @@ class UFTaskSet extends CommandLine {
 	public function new( ?injector:Injector ) {
 		super();
 		this.injector = (injector!=null) ? injector : new Injector();
-		inject( Injector, injector );
+		inject( Injector, this.injector );
 	}
 
 	/**
