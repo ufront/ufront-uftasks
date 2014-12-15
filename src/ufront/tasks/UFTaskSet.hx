@@ -3,6 +3,7 @@ package ufront.tasks;
 import mcli.CommandLine;
 import minject.Injector;
 import sys.io.*;
+import sys.FileSystem;
 import ufront.log.FileLogger;
 import ufront.log.Message;
 import ufront.log.MessageList;
@@ -62,6 +63,9 @@ class UFTaskSet extends CommandLine {
 		if ( logFile!=null ) {
 			var contentDir:String = injector.getInstance( String, "contentDirectory" );
 			var logFilePath = contentDir.addTrailingSlash()+logFile;
+			var logFileDirectory = logFilePath.directory();
+			if ( FileSystem.exists(logFileDirectory)==false )
+				FileSystem.createDirectory( logFileDirectory );
 			file = File.append( logFilePath );
 			var line = '${Date.now()} [UFTask Runner] ${Sys.args()}';
 			file.writeString( '$line\n' );
