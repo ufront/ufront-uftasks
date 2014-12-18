@@ -1,5 +1,6 @@
 package ufront.tasks;
 
+#if sys
 import mcli.CommandLine;
 import minject.Injector;
 import sys.io.*;
@@ -126,3 +127,4 @@ class UFTaskSet extends CommandLine {
 	**/
 	@:noCompletion inline function ufError( msg:Dynamic, ?pos:PosInfos ) messages.push({ msg: msg, pos: pos, type:Error });
 }
+#end

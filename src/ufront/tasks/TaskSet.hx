@@ -1,5 +1,6 @@
 package ufront.tasks;
 
+#if sys
 import haxe.web.Dispatch;
 import Sys.println;
 import Sys.print;
@@ -10,6 +11,9 @@ using Reflect;
 
 @:rtti
 @:deprecated
+/**
+	Deprecated. Please use `UFTaskSet` instead.
+**/
 class TaskSet {
 
 	public function new() {}
@@ -156,3 +160,4 @@ class TaskSet {
 		}
 	}
 }
+#end
