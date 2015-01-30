@@ -100,6 +100,14 @@ class UFTaskSet extends CommandLine {
 	}
 
 	/**
+		Show this message.
+	**/
+	public function help()
+	{
+		Sys.println(this.showUsage());
+	}
+
+	/**
 		A shortcut to `HttpContext.ufTrace`
 
 		A `messages` array must be injected for these to function correctly.  Use `ufront.tasks.UFTaskSet.run()` to inject this correctly.
