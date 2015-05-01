@@ -10,7 +10,6 @@ import ufront.log.Message;
 import ufront.log.MessageList;
 import ufront.api.UFApi;
 import haxe.PosInfos;
-using ufront.core.InjectionTools;
 using haxe.io.Path;
 
 class UFTaskSet extends CommandLine {
@@ -21,10 +20,10 @@ class UFTaskSet extends CommandLine {
 		Set during the constructor, and injection into this object is performed immediately.
 	**/
 	@:skip public var injector(default,null):Injector;
-	
+
 	/**
 		The messages list.  This must be injected for `ufTrace`, `ufLog`, `ufWarn` and `ufError` to function correctly.
-		
+
 		You can call `useCLILogging()` to set up a message list appropriate for CLI usage.
 	**/
 	@:skip @inject public var messages:MessageList;
@@ -37,20 +36,7 @@ class UFTaskSet extends CommandLine {
 	public function new( ?injector:Injector ) {
 		super();
 		this.injector = (injector!=null) ? injector : new Injector();
-		inject( Injector, this.injector );
-	}
-
-	/**
-		Shortcut to map a class into `injector`.
-
-		See `ufront.core.InjectionTools.inject()` for details on how injection is performed.
-
-		This method is chainable.
-	**/
-	@:skip
-	public function inject<T>( cl:Class<T>, ?val:T, ?cl2:Class<T>, ?singleton:Bool=false, ?named:String ):UFTaskSet {
-		injector.inject( cl, val, cl2, singleton, named );
-		return this;
+		this.injector.mapValue( Injector, this.injector );
 	}
 
 	/**
@@ -86,7 +72,7 @@ class UFTaskSet extends CommandLine {
 
 	/**
 		Execute the current task set, given a set of parameters passed in from the command line.
-		
+
 		Example usage:
 
 		```haxe
