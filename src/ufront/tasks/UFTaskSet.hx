@@ -2,6 +2,7 @@ package ufront.tasks;
 
 #if sys
 import mcli.CommandLine;
+import mcli.Dispatch;
 import minject.Injector;
 import sys.io.*;
 import sys.FileSystem;
@@ -71,7 +72,9 @@ class UFTaskSet extends CommandLine {
 	}
 
 	/**
-		Execute the current task set, given a set of parameters passed in from the command line.
+		Execute the current task set, given a set of arguments passed in from the command line.
+
+		Please note this will perform dependency injection on `this` before executing the request with the given args.
 
 		Example usage:
 
@@ -83,6 +86,24 @@ class UFTaskSet extends CommandLine {
 	public function execute( args:Array<String> ) {
 		injector.injectInto( this );
 		new mcli.Dispatch( args ).dispatch( this );
+	}
+
+	/**
+		Execute a sub-task set, passing the remaining arguments through.
+
+		The class will be created through dependency injection.
+
+		Example usage:
+
+		```haxe
+		public function setup( d:Dispatch ) {
+			executeSubTasks( d, SetupTasks );
+		}
+		```
+	**/
+	@:skip
+	public function executeSubTasks( d:Dispatch, cls:Class<UFTaskSet> ) {
+		d.dispatch( injector.instantiate(cls) );
 	}
 
 	/**
