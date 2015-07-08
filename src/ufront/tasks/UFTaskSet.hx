@@ -37,7 +37,7 @@ class UFTaskSet extends CommandLine {
 	public function new( ?injector:Injector ) {
 		super();
 		this.injector = (injector!=null) ? injector : new Injector();
-		this.injector.mapValue( Injector, this.injector );
+		this.injector.map( Injector ).toValue( this.injector );
 	}
 
 	/**
@@ -66,8 +66,7 @@ class UFTaskSet extends CommandLine {
 			}
 		}
 		haxe.Log.trace = function(msg:Dynamic,?pos:PosInfos) onMessage({ msg: msg, pos: pos, type:Trace });
-		var messageList = new MessageList(onMessage);
-		injector.mapValue( MessageList, messageList );
+		injector.map( MessageList ).toValue( new MessageList(onMessage) );
 		return this;
 	}
 
