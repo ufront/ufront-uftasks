@@ -1,6 +1,5 @@
 package ufront.tasks;
 
-#if sys
 import mcli.CommandLine;
 import mcli.Dispatch;
 import minject.Injector;
@@ -47,23 +46,34 @@ class UFTaskSet extends CommandLine {
 	**/
 	@:skip
 	public function useCLILogging( ?logFile:String ):UFTaskSet {
+		var logFilePath = null;
 		var file:FileOutput = null;
 		if ( logFile!=null ) {
 			var contentDir:String = injector.getInstance( String, "contentDirectory" );
-			var logFilePath = contentDir.addTrailingSlash()+logFile;
+			logFilePath = contentDir.addTrailingSlash()+logFile;
 			var logFileDirectory = logFilePath.directory();
 			if ( FileSystem.exists(logFileDirectory)==false )
 				FileSystem.createDirectory( logFileDirectory );
-			file = File.append( logFilePath );
+			
 			var line = '${Date.now()} [UFTask Runner] ${Sys.args()}';
-			file.writeString( '$line\n' );
+			
+			#if nodejs
+				js.node.Fs.appendFileSync( logFilePath, '$line\n' );
+			#else
+				file = File.append( logFilePath );
+				file.writeString( '$line\n' );
+			#end
+			
 		}
 		function onMessage( msg:Message ) {
 			var line = FileLogger.format( msg );
 			Sys.println( line );
-			if ( file!=null ) {
-				file.writeString( '\t$line\n' );
-			}
+			
+			#if nodejs
+				if ( logFilePath!=null ) js.node.Fs.appendFileSync( logFilePath, '\t$line\n' );
+			#else
+				if ( file!=null ) file.writeString( '\t$line\n' );
+			#end
 		}
 		haxe.Log.trace = function(msg:Dynamic,?pos:PosInfos) onMessage({ msg: msg, pos: pos, type:MTrace });
 		injector.map( MessageList ).toValue( new MessageList(onMessage) );
@@ -141,4 +151,3 @@ class UFTaskSet extends CommandLine {
 	**/
 	@:noCompletion inline function ufError( msg:Dynamic, ?pos:PosInfos ) messages.push({ msg: msg, pos: pos, type:MError });
 }
-#end
