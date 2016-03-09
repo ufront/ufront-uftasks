@@ -11,6 +11,7 @@ import ufront.log.MessageList;
 import ufront.api.UFApi;
 import haxe.PosInfos;
 using haxe.io.Path;
+using StringTools;
 
 class UFTaskSet extends CommandLine {
 
@@ -58,6 +59,7 @@ class UFTaskSet extends CommandLine {
 			var line = '${Date.now()} [UFTask Runner] ${Sys.args()}';
 			
 			#if nodejs
+				// hxnodejs has no FileInput implemention (yet)
 				js.node.Fs.appendFileSync( logFilePath, '$line\n' );
 			#else
 				file = File.append( logFilePath );
@@ -67,13 +69,14 @@ class UFTaskSet extends CommandLine {
 		}
 		function onMessage( msg:Message ) {
 			var line = FileLogger.format( msg );
-			Sys.println( line );
 			
-			#if nodejs
-				if ( logFilePath!=null ) js.node.Fs.appendFileSync( logFilePath, '\t$line\n' );
-			#else
-				if ( file!=null ) file.writeString( '\t$line\n' );
-			#end
+			Sys.println( line );
+#if nodejs
+			// hxnodejs has no FileInput implemention (yet)
+			if ( logFilePath!=null ) js.node.Fs.appendFileSync( logFilePath, '\t$line\n' );
+#else
+			if ( file!=null ) file.writeString( '\t$line\n' );
+#end
 		}
 		haxe.Log.trace = function(msg:Dynamic,?pos:PosInfos) onMessage({ msg: msg, pos: pos, type:MTrace });
 		injector.map( MessageList ).toValue( new MessageList(onMessage) );
