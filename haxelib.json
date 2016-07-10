@@ -9,7 +9,7 @@
   "version": "1.0.0-beta.14",
   "url": "https://github.com/ufront/ufront-uftasks",
   "dependencies": {
-    "mcli": "0.1.4",
+    "mcli": "",
     "compiletime": "",
     "ufront-mvc": ""
   }
