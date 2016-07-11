@@ -4,9 +4,9 @@
   "classPath": "src",
   "tags": ["ufront","web","cli","neko","php","tasks","cron"],
   "description": "Tasks you write for your ufront app that can be run from the ufadmin panel or from the command line.",
-  "contributors": ["jason"],
-  "releasenote": "Added `executeSubTasks` helper. Updates for ufront-mvc and minject.",
-  "version": "1.0.0-beta.14",
+  "contributors": ["jason","kevinresol","andyli"],
+  "releasenote": "Get it working on nodeJS. Use latest mcli as dependency, rather than an explicit version.",
+  "version": "1.0.0-beta.15",
   "url": "https://github.com/ufront/ufront-uftasks",
   "dependencies": {
     "mcli": "",
